@@ -29,3 +29,5 @@ CREATE TABLE IF NOT EXISTS ORDERSDETAIL (
     foreign key (order_id) references ORDERS(id),
     foreign key (product_id) references PRODUCT(id),
 );
+
+INSERT INTO PRODUCT(id, name, price, stock_qty, type) VALUES (1, '10-day Norway', 1000, 10, 'Group Travel');
