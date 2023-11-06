@@ -7,8 +7,7 @@ import ecommerce.travel.service.OrderService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.Date;
+import java.sql.Date;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -20,7 +19,7 @@ public class OrderServiceImpl implements OrderService {
     public Integer createOrder(OrderModel orderModel) {
         Order order = new Order();
         BeanUtils.copyProperties(orderModel, order);
-        order.setOrderDate(new Date(orderModel.getOrderDate()));
+        order.setOrderDate(new Date(orderModel.getOrderDate().getTime()));
         return orderMapper.createOrder(order);
     }
 }

@@ -31,3 +31,4 @@ CREATE TABLE IF NOT EXISTS ORDERSDETAIL (
 );
 
 INSERT INTO PRODUCT(id, name, price, stock_qty, type) VALUES (1, '10-day Norway', 1000, 10, 'Group Travel');
+INSERT INTO CUSTOMER(id, name, phone, email) VALUES (1, 'althea', '039551287', 'chuchu1214@gmail.com');

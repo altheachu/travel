@@ -1,6 +1,5 @@
 package ecommerce.travel.model;
 
-import ecommerce.travel.entity.OrderDetail;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,8 +13,8 @@ public class OrderModel {
     // 客戶編號
     private Integer customerId;
     // 訂購時間
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
-    private String orderDate;
+    @DateTimeFormat( pattern = "yyyy-MM-dd" )
+    private Date orderDate;
     // 支付金額
     private BigDecimal orderAmt;
     // 訂單內容清單
