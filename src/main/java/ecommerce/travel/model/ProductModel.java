@@ -1,16 +1,12 @@
-package ecommerce.travel.entity;
-
-//import lombok.Data;
+package ecommerce.travel.model;
 
 import lombok.Data;
 
 import java.math.BigDecimal;
 
-// 商品
 @Data
-public class Product {
-
-    // 編號
+public class ProductModel {
+    // 產品編號
     private Integer id;
     // 名稱
     private String name;
@@ -20,7 +16,4 @@ public class Product {
     private BigDecimal stockQty;
     // 商品類別
     private String type;
-    // 刪除否
-    private String disabled;
-
 }

@@ -4,6 +4,6 @@ import ecommerce.travel.model.OrderModel;
 
 public interface OrderService {
 
-    Integer createOrder(OrderModel orderModel);
+    Boolean createOrder(OrderModel orderModel) throws Exception;
 
 }

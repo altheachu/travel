@@ -19,5 +19,7 @@ public class Order {
     private Date orderDate;
     // 支付金額
     private BigDecimal orderAmt;
+    // 當天內消費次數
+    private Integer dailySeqno;
 
 }
