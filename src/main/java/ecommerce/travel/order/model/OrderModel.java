@@ -9,7 +9,6 @@ import java.util.List;
 
 @Data
 public class OrderModel {
-
     // 客戶編號
     private Integer customerId;
     // 訂購時間

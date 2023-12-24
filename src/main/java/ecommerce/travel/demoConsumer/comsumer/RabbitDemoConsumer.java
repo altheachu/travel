@@ -12,6 +12,6 @@ import java.util.Map;
 public class RabbitDemoConsumer {
     @RabbitHandler
     public void demoConsumer(Map map){
-        System.out.print("消費端收到服務端訊息: "+ map.toString());
+        System.out.print("Demo consumer receives a msg from demo producer: " + map.toString());
     }
 }

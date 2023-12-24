@@ -18,8 +18,11 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
 
-    @Autowired
     private ProductMapper productMapper;
+
+    public ProductServiceImpl(ProductMapper productMapper){
+        this.productMapper = productMapper;
+    }
 
     @Override
     public Integer createProduct(ProductModel productModel) throws Exception{
@@ -117,7 +120,8 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @RabbitListener(queues = {RabbitMQConfig.RABBITMQ_PRODUCT_TOPIC})
-    public void deductStockFromOrder(OrderDetailProxyDTO orderDetailList){
-        System.out.print("消費端收到服務端訊息: "+ orderDetailList.toString());
+    public void deductStockFromOrder(List<OrderDetailProxyDTO> orderDetails){
+        // TODO
+        System.out.print("消費端收到服務端訊息: "+ orderDetails.toString());
     }
 }
