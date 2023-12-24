@@ -8,7 +8,7 @@ import ecommerce.travel.order.model.OrderDetailModel;
 import ecommerce.travel.order.model.OrderModel;
 import ecommerce.travel.order.service.OrderProxyService;
 import ecommerce.travel.order.service.OrderService;
-import ecommerce.travel.util.OrderDetailProxyDTO;
+import ecommerce.travel.utility.OrderDetailProxyDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

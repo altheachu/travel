@@ -1,19 +1,14 @@
 package ecommerce.travel.order.service.impl;
 
 import ecommerce.travel.config.RabbitMQConfig;
-import ecommerce.travel.order.model.OrderDetailModel;
 import ecommerce.travel.order.service.OrderProxyService;
-import ecommerce.travel.order.service.OrderService;
-import ecommerce.travel.util.OrderDetailProxyDTO;
+import ecommerce.travel.utility.OrderDetailProxyDTO;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Service
 public class OrderProxyServiceImpl implements OrderProxyService {

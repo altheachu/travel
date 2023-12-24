@@ -1,7 +1,7 @@
-package ecommerce.travel.test.service.impl;
+package ecommerce.travel.demoProducer.service.impl;
 
 import ecommerce.travel.config.RabbitMQConfig;
-import ecommerce.travel.test.service.TestService;
+import ecommerce.travel.demoProducer.service.DemoService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -10,10 +10,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
 
 @Service
-public class TestServiceImpl implements TestService {
+public class DemoServiceImpl implements DemoService {
 
     //日期格式化
     private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -30,7 +29,7 @@ public class TestServiceImpl implements TestService {
             map.put("msgId", msgId);
             map.put("sendTime", sendTime);
             map.put("msg", msg);
-            rabbitTemplate.convertAndSend(RabbitMQConfig.RABBITMQ_DEMO_DIRECT_EXCHANGE, RabbitMQConfig.RABBITMQ_DEMO_DIRECT_ROUTING, map);
+            rabbitTemplate.convertAndSend(RabbitMQConfig.RABBITMQ_DEMOPRODUCER_TO_DEMOCOMSUMER_DIRECT_EXCHANGE, RabbitMQConfig.RABBITMQ_DEMOPRODUCER_TO_DEMOCOMSUMER_DIRECT_ROUTING, map);
             return "ok";
         } catch (Exception e) {
             e.printStackTrace();

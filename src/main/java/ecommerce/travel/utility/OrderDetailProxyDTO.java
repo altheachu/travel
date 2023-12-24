@@ -1,4 +1,4 @@
-package ecommerce.travel.util;
+package ecommerce.travel.utility;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

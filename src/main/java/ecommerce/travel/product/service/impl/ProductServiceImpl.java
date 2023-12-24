@@ -1,9 +1,12 @@
 package ecommerce.travel.product.service.impl;
 
+import ecommerce.travel.config.RabbitMQConfig;
 import ecommerce.travel.product.entity.Product;
 import ecommerce.travel.product.mapper.ProductMapper;
 import ecommerce.travel.product.model.ProductModel;
 import ecommerce.travel.product.service.ProductService;
+import ecommerce.travel.utility.OrderDetailProxyDTO;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -111,5 +114,10 @@ public class ProductServiceImpl implements ProductService {
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
+    }
+
+    @RabbitListener(queues = {RabbitMQConfig.RABBITMQ_PRODUCT_TOPIC})
+    public void deductStockFromOrder(OrderDetailProxyDTO orderDetailList){
+        System.out.print("消費端收到服務端訊息: "+ orderDetailList.toString());
     }
 }
