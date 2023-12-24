@@ -6,7 +6,9 @@ import ecommerce.travel.order.mapper.OrderDetailMapper;
 import ecommerce.travel.order.mapper.OrderMapper;
 import ecommerce.travel.order.model.OrderDetailModel;
 import ecommerce.travel.order.model.OrderModel;
+import ecommerce.travel.order.service.OrderProxyService;
 import ecommerce.travel.order.service.OrderService;
+import ecommerce.travel.util.OrderDetailProxyDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,8 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
     @Autowired
     private OrderDetailMapper orderDetailMapper;
+    @Autowired
+    private OrderProxyService orderProxyService;
 
     @Override
     public Boolean createOrder(OrderModel orderModel) throws Exception{
@@ -52,6 +56,9 @@ public class OrderServiceImpl implements OrderService {
                         orderDetailMapper.createOrderDetail(orderDetail);
                     }
                     // 發送扣庫 Event
+                    OrderDetailProxyDTO dto = new OrderDetailProxyDTO();
+                    BeanUtils.copyProperties(orderDetailList.get(0), dto);
+                    orderProxyService.deductProductStock(dto);
                     isOrderSucess = true;
                 }
             }
