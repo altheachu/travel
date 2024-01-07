@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS ORDERS (
     order_amt DECIMAL(8,2) NOT NULL,
     customer_id INT,
     daily_seqno INT,
+    cancel_flag VARCHAR(1),
     foreign key (customer_id) references CUSTOMER(id)
 );
 
@@ -30,6 +31,14 @@ CREATE TABLE IF NOT EXISTS ORDERSDETAIL (
     order_qty INT NOT NULL,
     foreign key (order_id) references ORDERS(id),
     foreign key (product_id) references PRODUCT(id),
+);
+
+CREATE TABLE IF NOT EXISTS EVENTLOG (
+    id INT PRIMARY KEY auto_increment,
+    msg_id VARCHAR(5) NOT NULL,
+    send_time VARCHAR(20) NOT NULL,
+    content VARCHAR(200) NOT NULL,
+    type VARCHAR(10) NOT NULL,
 );
 
 INSERT INTO PRODUCT(id, name, price, stock_qty, type, disabled) VALUES (1, '10-day Norway', 1000, 10, 'Group Travel', 'N');

@@ -18,4 +18,6 @@ public class OrderModel {
     private BigDecimal orderAmt;
     // 訂單內容清單
     private List<OrderDetailModel> orderDetailList;
+    // 訂單取消否
+    private String cancelFlag;
 }

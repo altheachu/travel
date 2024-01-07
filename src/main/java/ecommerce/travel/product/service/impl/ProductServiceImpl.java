@@ -1,16 +1,21 @@
 package ecommerce.travel.product.service.impl;
 
 import ecommerce.travel.config.RabbitMQConfig;
+import ecommerce.travel.order.entity.OrderDetail;
 import ecommerce.travel.product.entity.Product;
 import ecommerce.travel.product.mapper.ProductMapper;
 import ecommerce.travel.product.model.ProductModel;
 import ecommerce.travel.product.service.ProductService;
-import ecommerce.travel.utility.OrderDetailProxyDTO;
+import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
+import ecommerce.travel.utility.dto.OrderEventProxyDTO;
+import ecommerce.travel.utility.entity.Eventlog;
+import ecommerce.travel.utility.service.EventlogService;
+import ecommerce.travel.utility.utils.EventlogConstant;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,8 +25,11 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductMapper productMapper;
 
-    public ProductServiceImpl(ProductMapper productMapper){
+    private EventlogService eventlogService;
+
+    public ProductServiceImpl(ProductMapper productMapper, EventlogService eventlogService){
         this.productMapper = productMapper;
+        this.eventlogService = eventlogService;
     }
 
     @Override
@@ -119,9 +127,31 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @RabbitListener(queues = {RabbitMQConfig.RABBITMQ_PRODUCT_TOPIC})
-    public void deductStockFromOrder(List<OrderDetailProxyDTO> orderDetails){
-        // TODO
-        System.out.print("消費端收到服務端訊息: "+ orderDetails.toString());
+    @RabbitListener(queues = {RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_TOPIC})
+    public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO) throws Exception{
+
+        try {
+            List<OrderDetailProxyDTO> orderDetailList = orderEventProxyDTO.getOrderDetailProxyDTOList();
+            // record event receive log
+            Eventlog eventlog = new Eventlog();
+            eventlog.setMsgId(orderEventProxyDTO.getMsgId());
+            eventlog.setSendTime(orderEventProxyDTO.getSendTime());
+            eventlog.setContent(orderDetailList.toString());
+            eventlog.setType(EventlogConstant.receiveMsg);
+            eventlogService.updateEventLog(eventlog);
+
+            for (OrderDetailProxyDTO orderdetail : orderDetailList){
+                Integer pdtId = orderdetail.getProductId();
+                Integer orderQty = orderdetail.getOrderQty();
+                Product product = productMapper.findProductById(pdtId);
+                Integer currentQty = product.getStockQty().intValue() - orderQty;
+                product.setStockQty(BigDecimal.valueOf(currentQty));
+                productMapper.updateProduct(product);
+            }
+
+            System.out.print("消費端收到服務端訊息: "+ orderEventProxyDTO.toString());
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
 }

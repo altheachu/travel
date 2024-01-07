@@ -1,5 +1,7 @@
 package ecommerce.travel.order.service.impl;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.rabbitmq.tools.json.JSONUtil;
 import ecommerce.travel.order.entity.Order;
 import ecommerce.travel.order.entity.OrderDetail;
 import ecommerce.travel.order.mapper.OrderDetailMapper;
@@ -8,17 +10,16 @@ import ecommerce.travel.order.model.OrderDetailModel;
 import ecommerce.travel.order.model.OrderModel;
 import ecommerce.travel.order.service.OrderProxyService;
 import ecommerce.travel.order.service.OrderService;
-import ecommerce.travel.utility.OrderDetailProxyDTO;
+import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -32,6 +33,22 @@ public class OrderServiceImpl implements OrderService {
         this.orderMapper = orderMapper;
         this.orderDetailMapper = orderDetailMapper;
         this.orderProxyService = orderProxyService;
+    }
+
+    @Override
+    public OrderModel findOrderById(Integer id) throws Exception {
+        Order order = orderMapper.findOrderById(id);
+        OrderModel orderModel = new OrderModel();
+        BeanUtils.copyProperties(order, orderModel);
+        List<OrderDetail> orderDetails =orderDetailMapper.findOrderDetailByOrderId(order.getId());
+        List<OrderDetailModel> orderDetailModels = new ArrayList<>();
+        for (OrderDetail orderDetail : orderDetails){
+            OrderDetailModel orderDetailModel = new OrderDetailModel();
+            BeanUtils.copyProperties(orderDetail, orderDetailModel);
+            orderDetailModels.add(orderDetailModel);
+        }
+        orderModel.setOrderDetailList(orderDetailModels);
+        return orderModel;
     }
 
     @Override
@@ -72,7 +89,7 @@ public class OrderServiceImpl implements OrderService {
             }
             List<OrderDetailModel> orderDetailList = orderModel.getOrderDetailList();
             if(orderDetailList == null ){
-                throw new Exception("新增訂單失敗，無訂單明細");
+                throw new Exception("Fail to create order due to lack of order details");
             }
             Integer orderId = orderMapper.findOrderId(order);
             List<OrderDetailProxyDTO> orderDetailProxyDtoList = new ArrayList<>();
@@ -90,7 +107,19 @@ public class OrderServiceImpl implements OrderService {
             isOrderSucess = orderProxyService.deductProductStock(orderDetailProxyDtoList);
             return isOrderSucess;
         }catch (Exception e){
-            throw new Exception("新增訂單失敗: " + e.getMessage());
+            throw new Exception("Fail to create order: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public Integer deleteOrderById(Integer id) throws Exception {
+        try {
+            Map<String, Object> paramMap = new HashMap<>();
+            paramMap.put("cancelFlag","Y");
+            paramMap.put("id",id);
+            return orderMapper.deleteOrderById(paramMap);
+        } catch (Exception e){
+            throw new Exception("Fail to delete order: " + e.getMessage());
         }
     }
 }

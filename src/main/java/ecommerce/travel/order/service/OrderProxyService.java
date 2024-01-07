@@ -1,6 +1,6 @@
 package ecommerce.travel.order.service;
 
-import ecommerce.travel.utility.OrderDetailProxyDTO;
+import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -21,5 +21,5 @@ public interface OrderProxyService {
     params: orderDetail
     lastModified: 2023-12-24
     */
-    Boolean deductProductStock(List<OrderDetailProxyDTO> orderDetails);
+    Boolean deductProductStock(List<OrderDetailProxyDTO> orderDetails) throws Exception;
 }

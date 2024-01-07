@@ -1,4 +1,4 @@
-package ecommerce.travel.utility;
+package ecommerce.travel.utility.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,8 +10,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @NoArgsConstructor
 public class OrderDetailProxyDTO implements Serializable {
-    // 商品編號
+
     private Integer productId;
-    // 訂購數量
     private Integer orderQty;
+
 }

@@ -44,8 +44,8 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/findById")
-    public ProductModel findProductById(Integer id) throws Exception {
+    @GetMapping("/findById/{id}")
+    public ProductModel findProductById(@PathVariable Integer id) throws Exception {
         try{
             return productService.findProductById(id);
         }catch (Exception e){
