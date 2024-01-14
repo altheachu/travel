@@ -1,9 +1,8 @@
 package ecommerce.travel.customer.entity;
 
-//import lombok.Data;
+import lombok.Data;
 
-// 客戶
-//@Data
+@Data
 public class Customer {
 
     // 編號

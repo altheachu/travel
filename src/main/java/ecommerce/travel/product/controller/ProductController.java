@@ -2,6 +2,7 @@ package ecommerce.travel.product.controller;
 
 import ecommerce.travel.product.model.ProductModel;
 import ecommerce.travel.product.service.ProductService;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -13,12 +14,16 @@ import java.util.List;
 @CrossOrigin(value = "http://localhost:8080")
 public class ProductController {
 
-    @Autowired
     private ProductService productService;
+
+    public ProductController(ProductService productService){
+        this.productService = productService;
+    }
 
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/add")
-    public Integer createProduct(ProductModel productModel) throws Exception{
+    @ApiOperation(value = "Add Product")
+    public Integer createProduct(@RequestBody ProductModel productModel) throws Exception{
         try{
             return productService.createProduct(productModel);
         }catch (Exception e){
@@ -27,6 +32,7 @@ public class ProductController {
     }
 
     @GetMapping("/findAll")
+    @ApiOperation(value = "Find All Product")
     public List<ProductModel> findAllProduct() throws Exception {
         try{
             return productService.findAllProduct();
@@ -36,7 +42,8 @@ public class ProductController {
     }
 
     @GetMapping("/findByName")
-    public List<ProductModel> findProductByName(String name) throws Exception {
+    @ApiOperation(value = "Find All Product")
+    public List<ProductModel> findProductByName(@RequestParam(name = "name") String name) throws Exception {
         try{
             return productService.findProductByName(name);
         }catch (Exception e){
@@ -45,6 +52,7 @@ public class ProductController {
     }
 
     @GetMapping("/findById/{id}")
+    @ApiOperation(value = "Find Product By Id")
     public ProductModel findProductById(@PathVariable Integer id) throws Exception {
         try{
             return productService.findProductById(id);
@@ -53,8 +61,10 @@ public class ProductController {
         }
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @ApiOperation(value = "Update Product Info")
     @PostMapping("/update")
-    public Integer update(ProductModel productModel) throws Exception{
+    public Integer update(@RequestBody ProductModel productModel) throws Exception{
         try{
             return productService.updateProduct(productModel);
         }catch (Exception e){
@@ -62,8 +72,10 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/delete")
-    public Integer delete(Integer id) throws Exception{
+    @Transactional(rollbackFor = Exception.class)
+    @ApiOperation(value = "Delete Product By Id")
+    @PostMapping("/delete/{id}")
+    public Integer delete(@PathVariable Integer id) throws Exception{
         try{
             return productService.deleteProduct(id);
         }catch (Exception e){
