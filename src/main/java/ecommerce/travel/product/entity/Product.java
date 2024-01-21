@@ -22,5 +22,9 @@ public class Product {
     private String type;
     // 刪除否
     private String disabled;
+    // 圖片位址
+    private String pdtUrl;
+    // 圖片說明
+    private String pdtAlt;
 
 }

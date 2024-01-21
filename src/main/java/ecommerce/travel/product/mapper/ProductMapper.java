@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface ProductMapper {
 
-    @Insert("INSERT INTO PRODUCT(id, name, price, stock_qty, type, enabled) VALUES (#{id}, #{name}, #{price}, #{stockQty}, #{type}, #{enabled})")
+    @Insert("INSERT INTO PRODUCT(id, name, price, stock_qty, type, pdt_url, pdt_alt, enabled) VALUES (#{id}, #{name}, #{price}, #{stockQty}, #{type}, #{pdtUrl}, #{pdtAlt}, #{enabled})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer createProduct(Product product);
 
@@ -19,6 +19,8 @@ public interface ProductMapper {
             @Result(property = "price", column = "price", id=false),
             @Result(property = "stockQty", column = "stock_qty", id=false),
             @Result(property = "type", column = "type", id=false),
+            @Result(property = "pdtUrl", column = "pdt_url", id=false),
+            @Result(property = "pdtAlt", column = "pdt_alt", id=false),
             @Result(property = "enabled", column = "enabled", id=false)
     })
     List<Product> findAllProduct();
@@ -30,6 +32,8 @@ public interface ProductMapper {
             @Result(property = "price", column = "price", id=false),
             @Result(property = "stockQty", column = "stock_qty", id=false),
             @Result(property = "type", column = "type", id=false),
+            @Result(property = "pdtUrl", column = "pdt_url", id=false),
+            @Result(property = "pdtAlt", column = "pdt_alt", id=false),
             @Result(property = "enabled", column = "enabled", id=false)
     })
     List<Product> findProductByName(String name);
@@ -41,11 +45,13 @@ public interface ProductMapper {
             @Result(property = "price", column = "price", id=false),
             @Result(property = "stockQty", column = "stock_qty", id=false),
             @Result(property = "type", column = "type", id=false),
+            @Result(property = "pdtUrl", column = "pdt_url", id=false),
+            @Result(property = "pdtAlt", column = "pdt_alt", id=false),
             @Result(property = "enabled", column = "enabled", id=false)
     })
     Product findProductById(Integer id);
 
-    @Update("UPDATE PRODUCT SET name = #{name}, price = #{price}, stock_qty = #{stockQty}, type = #{type} WHERE id = #{id}")
+    @Update("UPDATE PRODUCT SET name = #{name}, price = #{price}, stock_qty = #{stockQty}, pdt_url = #{pdtUrl}, pdt_alt = #{pdtAlt} type = #{type} WHERE id = #{id}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer updateProduct(Product product);
 

@@ -16,4 +16,8 @@ public class ProductModel {
     private BigDecimal stockQty;
     // 商品類別
     private String type;
+    // 圖片位址
+    private String pdtUrl;
+    // 圖片說明
+    private String pdtAlt;
 }

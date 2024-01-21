@@ -31,7 +31,7 @@ public class ProductController {
         }
     }
 
-    @GetMapping("/findAll")
+    @GetMapping
     @ApiOperation(value = "Find All Product")
     public List<ProductModel> findAllProduct() throws Exception {
         try{
