@@ -51,7 +51,7 @@ public interface ProductMapper {
     })
     Product findProductById(Integer id);
 
-    @Update("UPDATE PRODUCT SET name = #{name}, price = #{price}, stock_qty = #{stockQty}, pdt_url = #{pdtUrl}, pdt_alt = #{pdtAlt} type = #{type} WHERE id = #{id}")
+    @Update("UPDATE PRODUCT SET name = #{name}, price = #{price}, stock_qty = #{stockQty}, pdt_url = #{pdtUrl}, pdt_alt = #{pdtAlt}, type = #{type} WHERE id = #{id}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer updateProduct(Product product);
 

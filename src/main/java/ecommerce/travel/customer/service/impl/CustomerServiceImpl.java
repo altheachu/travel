@@ -20,7 +20,8 @@ public class CustomerServiceImpl implements CustomerService {
             Boolean isCreateSuccess = false;
             Customer customer = new Customer();
             BeanUtils.copyProperties(customerModel, customer);
-            return customerMapper.createCustomer(customer);
+            customerMapper.createCustomer(customer);
+            return customerMapper.findCustomerId();
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }
