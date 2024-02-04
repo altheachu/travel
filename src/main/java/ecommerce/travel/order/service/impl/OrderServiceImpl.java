@@ -73,6 +73,7 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Boolean createOrder(OrderModel orderModel) throws Exception{
         try {
+            OrderModel completeOrderModel = null;
             boolean isOrderSucess = false;
             Integer dailySeqno = 1;
             Order order = new Order();
@@ -105,6 +106,11 @@ public class OrderServiceImpl implements OrderService {
             }
             // publish event to product module and deduct stock
             isOrderSucess = orderProxyService.deductProductStock(orderDetailProxyDtoList);
+            // TODO compose front-end info
+            if(isOrderSucess){
+                Order completeOrder = orderMapper.findOrderById(orderId);
+                List<OrderDetail> OrderDetail = orderDetailMapper.findOrderDetailByOrderId(completeOrder.getId());
+            }
             return isOrderSucess;
         }catch (Exception e){
             throw new Exception("Fail to create order: " + e.getMessage());
