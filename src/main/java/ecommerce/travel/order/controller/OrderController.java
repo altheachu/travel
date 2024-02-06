@@ -23,7 +23,7 @@ public class OrderController {
     @Transactional(rollbackFor = Exception.class)
     @PostMapping("/add")
     @ApiOperation(value = "Add Order")
-    public Boolean addOrder(@RequestBody OrderModel orderModel) throws Exception {
+    public OrderModel addOrder(@RequestBody OrderModel orderModel) throws Exception {
         try {
             Boolean isViewOrderAmtCorrect = orderService.checkOrderAmt(orderModel);
             if (!isViewOrderAmtCorrect){

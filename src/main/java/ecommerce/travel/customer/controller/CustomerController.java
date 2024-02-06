@@ -29,4 +29,15 @@ public class CustomerController {
             throw new Exception(e.getMessage());
         }
     }
+
+    @GetMapping("/findById/{id}")
+    @ApiOperation("Find A Customer By Customer ID")
+    public CustomerModel findCustomerById(@PathVariable Integer id) throws Exception {
+        try {
+            return customerService.findCustomerById(id);
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
 }

@@ -71,7 +71,7 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Boolean createOrder(OrderModel orderModel) throws Exception{
+    public OrderModel createOrder(OrderModel orderModel) throws Exception{
         try {
             OrderModel completeOrderModel = null;
             boolean isOrderSucess = false;
@@ -106,12 +106,23 @@ public class OrderServiceImpl implements OrderService {
             }
             // publish event to product module and deduct stock
             isOrderSucess = orderProxyService.deductProductStock(orderDetailProxyDtoList);
-            // TODO compose front-end info
             if(isOrderSucess){
                 Order completeOrder = orderMapper.findOrderById(orderId);
-                List<OrderDetail> OrderDetail = orderDetailMapper.findOrderDetailByOrderId(completeOrder.getId());
+                List<OrderDetail> orderDetails = orderDetailMapper.findOrderDetailByOrderId(completeOrder.getId());
+                List<OrderDetailModel> orderDetailModelList = new ArrayList<>();
+                for (OrderDetail orderDetail : orderDetails) {
+                    OrderDetailModel orderDetailModel = new OrderDetailModel();
+                    BeanUtils.copyProperties(orderDetail, orderDetailModel);
+                    orderDetailModelList.add(orderDetailModel);
+                }
+                completeOrderModel = new OrderModel();
+                completeOrderModel.setOrderId(orderId);
+                completeOrderModel.setOrderDate(completeOrder.getOrderDate());
+                completeOrderModel.setOrderAmt(completeOrder.getOrderAmt());
+                completeOrderModel.setOrderDetailList(orderDetailModelList);
+                completeOrderModel.setCustomerId(completeOrder.getCustomerId());
             }
-            return isOrderSucess;
+            return completeOrderModel;
         }catch (Exception e){
             throw new Exception("Fail to create order: " + e.getMessage());
         }

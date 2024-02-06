@@ -4,6 +4,7 @@ import ecommerce.travel.customer.entity.Customer;
 import ecommerce.travel.customer.mapper.CustomerMapper;
 import ecommerce.travel.customer.model.CustomerModel;
 import ecommerce.travel.customer.service.CustomerService;
+import ecommerce.travel.order.model.OrderModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,18 @@ public class CustomerServiceImpl implements CustomerService {
             BeanUtils.copyProperties(customerModel, customer);
             customerMapper.createCustomer(customer);
             return customerMapper.findCustomerId();
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
+    }
+
+    @Override
+    public CustomerModel findCustomerById(Integer id) throws Exception {
+        try {
+            CustomerModel customerModel = new CustomerModel();
+            Customer customer = customerMapper.findCustomerById(id);
+            BeanUtils.copyProperties(customer, customerModel);
+            return customerModel;
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }

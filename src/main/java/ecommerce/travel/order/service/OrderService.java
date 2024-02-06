@@ -26,7 +26,7 @@ public interface OrderService {
     params: orderModel
     lastModified: 2023-12-24
     */
-    Boolean createOrder(OrderModel orderModel) throws Exception;
+    OrderModel createOrder(OrderModel orderModel) throws Exception;
 
     /*
     description: delete an order based on order id
