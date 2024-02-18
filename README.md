@@ -1,4 +1,4 @@
-<a name="readme-top"></a>
+<a id="readme-top"></a>
 
 <!-- TABLE OF CONTENTS -->
 # Contents Summary
@@ -9,17 +9,18 @@
       <a href="#about-the-project">About The Project</a>
       <ul>
         <li><a href="#built-with">Built With</a></li>
+        <li><a href="#techniques">Techniques</a></li>
         <li><a href="#project-structure">Project Structure</a></li>
       </ul>
     </li>
-<!--     <li>
+<!--    <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+<li><a href="#usage">Usage</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -32,60 +33,45 @@
 <!-- ABOUT THE PROJECT -->
 ## About The Project
 
-This project is the back-end part of an e-commerce website. 
+<a id="about-the-project"></a>
 
-It is written by Java 11 with an integration of SpringBoot and RabbitMq. As a result, Starting up RabbitMQ server locally is necessary for running the whole program successfully.
+This project is the back-end of an e-commerce website. It roughly demonstrates the project structure and coding techniques that I worked on daily in the company, Ailisi. Due to its demonstration purpose, the project only includes a basic shopping process now.
 
-If you do not know how to run RabbitMQ server locally on your application. Use the `RABBITMQ_README.md` to get started.
+It is written by Java 11 with an integration of SpringBoot and RabbitMq. As a result, Starting up RabbitMQ server locally is necessary for running the whole program successfully. (If you do not know how to run RabbitMQ server locally on your application. Use the `RABBITMQ_README.md` to get started.)
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Built With
 
+<a id="built-with"></a>
+
 * [Java][Java-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Techiniques
+
+<a id="techniques"></a>
+
+* Framework
+  * [Spring Boot][SpringBoot-url]
+  * [MyBatis][MyBatis-url]
+* Database
+  * [H2 Database][H2-url]
+* Message-oriented Middleware
+  * [RabbitMQ][RabbitMQ-url]
+* Documentation
+  * [Swagger UI][SwaggerUI-url]
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Project Structure
 
-├─src
-│  ├─main
-│  │  ├─java
-│  │  │  └─ecommerce
-│  │  │      └─travel
-│  │  │          ├─config
-│  │  │          │  └─RabbitMQConfig(重新定義命名原則)
-│  │  │          │  └─SwaggerConfig
-│  │  │          ├─customer
-│  │  │          │  └─entity
-│  │  │          ├─order
-│  │  │          │  ├─controller
-│  │  │          │  ├─entity
-│  │  │          │  ├─mapper
-│  │  │          │  ├─model
-│  │  │          │  └─service
-│  │  │          │      └─impl
-│  │  │          ├─product
-│  │  │          │  ├─consumer
-│  │  │          │  ├─controller
-│  │  │          │  ├─entity
-│  │  │          │  ├─mapper
-│  │  │          │  ├─model
-│  │  │          │  └─service
-│  │  │          │      └─impl
-│  │  │          ├─test
-│  │  │          │  ├─controller
-│  │  │          │  ├─model
-│  │  │          │  └─service
-│  │  │          │      └─impl
-│  │  │          └─util
-│  │  └─resources
-│  │      ├─static
-│  │      └─templates
-│  └─test
-│      └─java
-│          └─ecommerce
-│              └─travel
+<a id="project-structure"></a>
+
+![project-structure!](/assets/img/project_structure.jpg "Project Structure")
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- GETTING STARTED -->
 <!-- 
@@ -212,4 +198,12 @@ https://github.com/othneildrew/Best-README-Template/blob/master/README.md?plain=
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
+
 [Java-url]: https://www.java.com/en/
+[SpringBoot-url]: https://spring.io/projects/spring-boot
+[MyBatis-url]: https://mybatis.org/mybatis-3/
+[H2-url]: https://www.h2database.com/html/main.html
+[RabbitMQ-url]: https://www.rabbitmq.com/
+[SwaggerUI-url]: https://swagger.io/tools/swagger-ui/
+
+
