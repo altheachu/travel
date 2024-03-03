@@ -21,6 +21,9 @@
         <li><a href="#shut-down">Shut Down</a></li>
       </ul>
     </li>
+    <li>
+      <a href="#reference">Reference</a>
+    </li>
   </ol>
 </details>
 
@@ -52,9 +55,71 @@ To install RabbitMQ successfully, the version of Erlang and RabbitMQ should matc
   ![Erlang-Path-Setting-01](/assets/img/Erlang_path_01.jpg "Find Path Variable and click 'Edit' button.")
   ![Erlang-Path-Setting-02](/assets/img/Erlang_path_02.jpg "Add the bin folder path (with the Erlang home) of Erlang.")
 
-[//]: # (https://blog.csdn.net/qq_42402854/article/details/103032007)
+* Download [RabbitMQ](RabbitMQ-url)
+* Double-click the downloaded file and set up (keep clicking 'next' button and 'install' button finally)
+* Install RabbitMQ plugins (aim to visit login webpage through browser)
+  * open up cmd console
+  * find /sbin directory
+    ```sh
+    cd C:\Program Files\RabbitMQ Server\rabbitmq_server-3.7.3\sbin
+    ```
+  * key in the following command and press enter key.
+    ```sh
+    rabbitmq-plugins enable rabbitmq_management
+    ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Use RabbitMQ
+
+<a id="use-rabbitmq"></a>
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Start Up
+
+<a id="start-up"></a>
+
+* open up cmd console
+* Find /spin directory
+  ```sh
+    cd C:\Program Files\RabbitMQ Server\rabbitmq_server-3.7.3\sbin
+  ```
+* key in the following command and press enter key.
+  ```sh
+    rabbitmq-server.bat
+  ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Management GUI
+
+<a id="management-gui"></a>
+
+* Open up browser
+* key in url [http://localhost:15672](Localhost-url)
+* login in management GUI with *'guest'* as Username and Password
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+### Shut Down
+
+<a id="shut-down"></a>
+
+<!--TODO-->
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Reference
+
+<a id="reference"></a>
+
+If you can read Chinese, you can find more details [here](reference-url).
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
 
 [Erlang-url]: https://www.erlang.org/downloads
+[RabbitMQ-url]: https://www.rabbitmq.com/docs/install-windows
+[Localhost-url]: http://localhost:15672
+[reference-url]: https://blog.csdn.net/qq_42402854/article/details/103032007
