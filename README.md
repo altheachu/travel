@@ -74,6 +74,8 @@ It is written by Java 11 with an integration of SpringBoot and RabbitMq. As a re
 
 ## Getting Started
 
+<a id="getting-started"></a>
+
 This is an example of how you may give instructions on setting up your project locally.
 To get a local copy up and running follow these simple example steps.
 
@@ -81,11 +83,15 @@ To get a local copy up and running follow these simple example steps.
 
 ### Prerequisites
 
+<a id="prerequisites"></a>
+
 You need to install Erlang 20.0.x and RabbitMQ 3.7.3 on windows 10 to make sure that this project can run this project successfully. The installation steps can be found in `RABBITMQ_README.md`.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ### Installation
+
+<a id="installation"></a>
 
 1. Clone the repo
   ```sh
@@ -97,9 +103,25 @@ You need to install Erlang 20.0.x and RabbitMQ 3.7.3 on windows 10 to make sure 
   ```
 3. Start up SpringBoot project through `/src/main/java/ecommerce/travel/TravelApplication`
 
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ### Front-end Project
 
-/* TODO */
+<a id="frontend"></a>
+
+* [github][FrontEnd-url]
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+## Contact
+
+<a id="contact"></a>
+
+Althea Chu - [@Althea (Chia-Hsuan) Chu](https://www.linkedin.com/in/althea-chu-24966291/) - aehtla2012@gmail.com
+
+Project Link: [https://github.com/altheachu/e-commerce-travelling](https://github.com/altheachu/e-commerce-travelling)
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 <!-- MARKDOWN LINKS & IMAGES -->
 <!-- https://www.markdownguide.org/basic-syntax/#reference-style-links -->
@@ -110,5 +132,6 @@ You need to install Erlang 20.0.x and RabbitMQ 3.7.3 on windows 10 to make sure 
 [H2-url]: https://www.h2database.com/html/main.html
 [RabbitMQ-url]: https://www.rabbitmq.com/
 [SwaggerUI-url]: https://swagger.io/tools/swagger-ui/
+[FrontEnd-url]: https://github.com/altheachu/e-commerce-travelling.git
 
 

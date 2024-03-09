@@ -48,7 +48,6 @@ To install RabbitMQ successfully, the version of Erlang and RabbitMQ should matc
 * Double-click the downloaded file and set up (keep clicking 'next' button)
 * Set up environmental variables:
   * Set up Erlang home as a system variable with a value of Erlang program path.
-    
   ![Erlang-Home-Setting](/assets/img/Erlang_home.jpg "Set Erlang home as a system variable")
   
   * Amend the path in User Variable
@@ -106,7 +105,16 @@ To install RabbitMQ successfully, the version of Erlang and RabbitMQ should matc
 
 <a id="shut-down"></a>
 
-<!--TODO-->
+* Find node name in management GUI(/assets/img/RabbitMQ_node_name.jpg "Node name position in management GUI")
+* open up cmd console
+* Find /spin directory
+  ```sh
+    cd C:\Program Files\RabbitMQ Server\rabbitmq_server-3.7.3\sbin
+  ```
+* key in the following command and press enter key.
+  ```sh
+    rabbitmqctl stop -n rabbit@[nodeName]
+  ```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
