@@ -77,7 +77,7 @@ It is written by Java 11 with an integration of SpringBoot and RabbitMq. As a re
 <a id="getting-started"></a>
 
 This is an example of how you may give instructions on setting up your project locally.
-To get a local copy up and running follow these simple example steps.
+To get a local copy up and running, follow these simple example steps.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -97,11 +97,11 @@ You need to install Erlang 20.0.x and RabbitMQ 3.7.3 on windows 10 to make sure 
   ```sh
    git clone https://github.com/altheachu/travel.git
   ```
-2. Start up RabbitMQ (details in `RABBITMQ_README.md`)
+2. Run RabbitMQ (details in `RABBITMQ_README.md`)
   ```sh
     rabbitmq-server.bat
   ```
-3. Start up SpringBoot project through `/src/main/java/ecommerce/travel/TravelApplication`
+3. Run SpringBoot project through `/src/main/java/ecommerce/travel/TravelApplication`
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
