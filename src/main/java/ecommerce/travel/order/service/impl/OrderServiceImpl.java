@@ -11,11 +11,13 @@ import ecommerce.travel.order.model.OrderModel;
 import ecommerce.travel.order.service.OrderProxyService;
 import ecommerce.travel.order.service.OrderService;
 import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
+import ecommerce.travel.utility.dto.OrderEventProxyDTO;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +30,7 @@ public class OrderServiceImpl implements OrderService {
     private OrderMapper orderMapper;
     private OrderDetailMapper orderDetailMapper;
     private OrderProxyService orderProxyService;
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     public OrderServiceImpl(OrderMapper orderMapper, OrderDetailMapper orderDetailMapper, OrderProxyService orderProxyService){
         this.orderMapper = orderMapper;
@@ -37,37 +40,43 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public OrderModel findOrderById(Integer id) throws Exception {
-        Order order = orderMapper.findOrderById(id);
-        OrderModel orderModel = new OrderModel();
-        BeanUtils.copyProperties(order, orderModel);
-        List<OrderDetail> orderDetails =orderDetailMapper.findOrderDetailByOrderId(order.getId());
-        List<OrderDetailModel> orderDetailModels = new ArrayList<>();
-        for (OrderDetail orderDetail : orderDetails){
-            OrderDetailModel orderDetailModel = new OrderDetailModel();
-            BeanUtils.copyProperties(orderDetail, orderDetailModel);
-            orderDetailModels.add(orderDetailModel);
+        try {
+            Order order = orderMapper.findOrderById(id);
+            OrderModel orderModel = new OrderModel();
+            BeanUtils.copyProperties(order, orderModel);
+            List<OrderDetail> orderDetails =orderDetailMapper.findOrderDetailByOrderId(order.getId());
+            List<OrderDetailModel> orderDetailModels = new ArrayList<>();
+            for (OrderDetail orderDetail : orderDetails){
+                OrderDetailModel orderDetailModel = new OrderDetailModel();
+                BeanUtils.copyProperties(orderDetail, orderDetailModel);
+                orderDetailModels.add(orderDetailModel);
+            }
+            orderModel.setOrderDetailList(orderDetailModels);
+            return orderModel;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
         }
-        orderModel.setOrderDetailList(orderDetailModels);
-        return orderModel;
     }
 
     @Override
     public Boolean checkOrderAmt(OrderModel orderModel) throws Exception {
-        boolean isPass = false;
-        BigDecimal orderAmtCal = BigDecimal.ZERO;
-        List<Integer> productIds = orderModel.getOrderDetailList().stream().map(t->t.getProductId()).collect(Collectors.toList());
-        Map<Integer,BigDecimal> productPriceMap = orderProxyService.findProductPriceById(productIds);
+        try{
+            boolean isPass = false;
+            BigDecimal orderAmtCal = BigDecimal.ZERO;
+            List<Integer> productIds = orderModel.getOrderDetailList().stream().map(t->t.getProductId()).collect(Collectors.toList());
+            Map<Integer,BigDecimal> productPriceMap = orderProxyService.findProductPriceById(productIds);
 
-        for(OrderDetailModel orderDetail : orderModel.getOrderDetailList()){
-            BigDecimal itemAmt = productPriceMap.get(orderDetail.getProductId()).multiply(new BigDecimal(orderDetail.getOrderQty()));
-            orderAmtCal = orderAmtCal.add(itemAmt);
+            for(OrderDetailModel orderDetail : orderModel.getOrderDetailList()){
+                BigDecimal itemAmt = productPriceMap.get(orderDetail.getProductId()).multiply(new BigDecimal(orderDetail.getOrderQty()));
+                orderAmtCal = orderAmtCal.add(itemAmt);
+            }
+            if(orderModel.getOrderAmt().equals(orderAmtCal)){
+                isPass = true;
+            }
+            return isPass;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
         }
-
-        if(orderModel.getOrderAmt().equals(orderAmtCal)){
-            isPass = true;
-        }
-
-        return isPass;
     }
 
     @Override
@@ -105,7 +114,13 @@ public class OrderServiceImpl implements OrderService {
                 orderDetailProxyDtoList.add(orderProxyDto);
             }
             // publish event to product module and deduct stock
-            isOrderSucess = orderProxyService.deductProductStock(orderDetailProxyDtoList);
+            String msgId = String.valueOf(Math.round(Math.random()*1000));
+            String sendTime = sdf.format(new java.util.Date());
+            OrderEventProxyDTO eventProxyDTO = new OrderEventProxyDTO();
+            eventProxyDTO.setMsgId(msgId);
+            eventProxyDTO.setSendTime(sendTime);
+            eventProxyDTO.setOrderDetailProxyDTOList(orderDetailProxyDtoList);
+            isOrderSucess = orderProxyService.deductProductStock(eventProxyDTO);
             if(isOrderSucess){
                 Order completeOrder = orderMapper.findOrderById(orderId);
                 List<OrderDetail> orderDetails = orderDetailMapper.findOrderDetailByOrderId(completeOrder.getId());

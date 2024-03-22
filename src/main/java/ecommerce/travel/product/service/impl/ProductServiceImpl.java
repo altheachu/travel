@@ -1,5 +1,7 @@
 package ecommerce.travel.product.service.impl;
 
+import ecommerce.travel.aop.EventLog;
+import ecommerce.travel.aop.LogTime;
 import ecommerce.travel.config.RabbitMQConfig;
 import ecommerce.travel.order.entity.OrderDetail;
 import ecommerce.travel.product.entity.Product;
@@ -128,17 +130,11 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @RabbitListener(queues = {RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_TOPIC})
+    @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.receiveMsg)
     public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO) throws Exception{
 
         try {
             List<OrderDetailProxyDTO> orderDetailList = orderEventProxyDTO.getOrderDetailProxyDTOList();
-            // record event receive log
-            Eventlog eventlog = new Eventlog();
-            eventlog.setMsgId(orderEventProxyDTO.getMsgId());
-            eventlog.setSendTime(orderEventProxyDTO.getSendTime());
-            eventlog.setContent(orderDetailList.toString());
-            eventlog.setType(EventlogConstant.receiveMsg);
-            eventlogService.updateEventLog(eventlog);
 
             for (OrderDetailProxyDTO orderdetail : orderDetailList){
                 Integer pdtId = orderdetail.getProductId();
@@ -149,7 +145,6 @@ public class ProductServiceImpl implements ProductService {
                 productMapper.updateProduct(product);
             }
 
-            System.out.print("消費端收到服務端訊息: "+ orderEventProxyDTO.toString());
         } catch (Exception e){
             throw new Exception(e.getMessage());
         }

@@ -1,5 +1,7 @@
 package ecommerce.travel.order.service.impl;
 
+import ecommerce.travel.aop.EventLog;
+import ecommerce.travel.aop.LogTime;
 import ecommerce.travel.config.RabbitMQConfig;
 import ecommerce.travel.order.service.OrderProxyService;
 import ecommerce.travel.product.service.ProductService;
@@ -22,8 +24,6 @@ import java.util.Map;
 
 @Service
 public class OrderProxyServiceImpl implements OrderProxyService {
-
-    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private ProductService productService;
     private EventlogService eventlogService;
     public OrderProxyServiceImpl(ProductService productService, EventlogService eventlogService){
@@ -35,35 +35,29 @@ public class OrderProxyServiceImpl implements OrderProxyService {
 
     @Override
     public Map<Integer, BigDecimal> findProductPriceById(List<Integer> productIds) throws Exception {
-        Map<Integer, BigDecimal> productPriceMap = new HashMap<>();
-        for(Integer productId: productIds){
-            productPriceMap.put(productId, productService.findProductById(productId).getPrice());
+        try {
+            Map<Integer, BigDecimal> productPriceMap = new HashMap<>();
+            for(Integer productId: productIds){
+                productPriceMap.put(productId, productService.findProductById(productId).getPrice());
+            }
+            return productPriceMap;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
         }
-        return productPriceMap;
     }
 
     @Override
-    public Boolean deductProductStock(List<OrderDetailProxyDTO> orderDetails) throws Exception {
-        Boolean isPublish = false;
-
-        String msgId = String.valueOf(Math.round(Math.random()*1000));
-        String sendTime = sdf.format(new Date());
-
-        // record event pre-publish log
-        Eventlog eventlog = new Eventlog();
-        eventlog.setMsgId(msgId);
-        eventlog.setSendTime(sendTime);
-        eventlog.setContent(orderDetails.toString());
-        eventlog.setType(EventlogConstant.prePublishMsg);
-        eventlogService.updateEventLog(eventlog);
-
-        // publish event
-        OrderEventProxyDTO eventProxyDTO = new OrderEventProxyDTO();
-        eventProxyDTO.setMsgId(msgId);
-        eventProxyDTO.setSendTime(sendTime);
-        eventProxyDTO.setOrderDetailProxyDTOList(orderDetails);
-        rabbitTemplate.convertAndSend(RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_EXCHANGE, RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_ROUTING, eventProxyDTO);
-        isPublish = true;
-        return isPublish;
+    @EventLog(logTime = LogTime.AFTER_METHOD, type = EventlogConstant.prePublishMsg)
+    public Boolean deductProductStock(OrderEventProxyDTO eventProxyDTO) throws Exception {
+        try {
+            Boolean isPublish = false;
+            // publish event
+            rabbitTemplate.convertAndSend(RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_EXCHANGE, RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_ROUTING, eventProxyDTO);
+            isPublish = true;
+            return isPublish;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
+        }
     }
+
 }
