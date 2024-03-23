@@ -3,7 +3,6 @@ package ecommerce.travel.product.controller;
 import ecommerce.travel.product.model.ProductModel;
 import ecommerce.travel.product.service.ProductService;
 import io.swagger.annotations.ApiOperation;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 

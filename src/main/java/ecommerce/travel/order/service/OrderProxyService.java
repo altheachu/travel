@@ -1,6 +1,5 @@
 package ecommerce.travel.order.service;
 
-import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
 
 import java.math.BigDecimal;

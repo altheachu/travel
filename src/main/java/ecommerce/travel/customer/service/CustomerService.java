@@ -1,6 +1,5 @@
 package ecommerce.travel.customer.service;
 
-import ecommerce.travel.customer.entity.Customer;
 import ecommerce.travel.customer.model.CustomerModel;
 
 public interface CustomerService {

@@ -1,6 +1,5 @@
 package ecommerce.travel.utility.service;
 
-import ecommerce.travel.product.model.ProductModel;
 import ecommerce.travel.utility.entity.Eventlog;
 
 public interface EventlogService {

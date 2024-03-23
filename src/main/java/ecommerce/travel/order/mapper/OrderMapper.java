@@ -1,7 +1,6 @@
 package ecommerce.travel.order.mapper;
 
 import ecommerce.travel.order.entity.Order;
-import ecommerce.travel.product.entity.Product;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Map;

@@ -1,9 +1,6 @@
 package ecommerce.travel.order.entity;
 
-//import lombok.Data;
-
 import lombok.Data;
-
 import java.math.BigDecimal;
 import java.sql.Date;
 

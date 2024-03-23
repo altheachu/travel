@@ -1,10 +1,6 @@
 package ecommerce.travel.order.entity;
 
-//import lombok.Data;
-
 import lombok.Data;
-
-import java.math.BigDecimal;
 
 // 訂單細節
 @Data

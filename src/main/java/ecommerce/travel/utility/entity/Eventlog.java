@@ -2,8 +2,6 @@ package ecommerce.travel.utility.entity;
 
 import lombok.Data;
 
-import java.sql.Date;
-
 @Data
 public class Eventlog {
 

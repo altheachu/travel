@@ -7,10 +7,6 @@ import java.lang.annotation.Target;
 
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EventLog {
-
-    LogTime logTime();
-
-    String type();
-
+public @interface SendEmail {
+    Timing value();
 }

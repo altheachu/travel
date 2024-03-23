@@ -4,7 +4,6 @@ import ecommerce.travel.customer.entity.Customer;
 import ecommerce.travel.customer.mapper.CustomerMapper;
 import ecommerce.travel.customer.model.CustomerModel;
 import ecommerce.travel.customer.service.CustomerService;
-import ecommerce.travel.order.model.OrderModel;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 

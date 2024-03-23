@@ -1,7 +1,7 @@
 package ecommerce.travel.order.service.impl;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rabbitmq.tools.json.JSONUtil;
+import ecommerce.travel.aop.SendEmail;
+import ecommerce.travel.aop.Timing;
 import ecommerce.travel.order.entity.Order;
 import ecommerce.travel.order.entity.OrderDetail;
 import ecommerce.travel.order.mapper.OrderDetailMapper;
@@ -79,6 +79,7 @@ public class OrderServiceImpl implements OrderService {
         }
     }
 
+    @SendEmail(value = Timing.AfterOrder)
     @Override
     public OrderModel createOrder(OrderModel orderModel) throws Exception{
         try {

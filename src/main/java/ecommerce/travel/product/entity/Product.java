@@ -1,7 +1,5 @@
 package ecommerce.travel.product.entity;
 
-//import lombok.Data;
-
 import lombok.Data;
 
 import java.math.BigDecimal;
