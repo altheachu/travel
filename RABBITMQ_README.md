@@ -38,7 +38,7 @@ RabbitMQ is built based on Erlang, so you must install Erlang before installing 
 
 To install RabbitMQ successfully, the version of Erlang and RabbitMQ should match with each other. You can refer to the following table. 
 
-![Erlang-RabbitMQ-config!](/assets/img/Erlang_rabbitMQ_config.jpg "Erlang & RabbitMQ config")
+![Erlang-RabbitMQ-config!](/assets/img/Erlang_rabbitMQ_config.JPG "Erlang & RabbitMQ config")
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
