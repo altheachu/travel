@@ -18,9 +18,7 @@ public class WeatherRecordDataProxyDTO {
 
     private WeatherRecordTimeProxyDTO validTime;
 
-    @DateTimeFormat( pattern = "yyyy-MM-dd HH:mm:ss" )
-    private Date issueTime;
+    private String issueTime;
 
-    @DateTimeFormat( pattern = "yyyy-MM-dd HH:mm:ss" )
-    private Date update;
+    private String update;
 }

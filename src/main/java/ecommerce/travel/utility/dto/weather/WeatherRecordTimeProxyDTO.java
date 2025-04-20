@@ -12,9 +12,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class WeatherRecordTimeProxyDTO {
 
-    @DateTimeFormat( pattern = "yyyy-MM-dd HH:mm:ss" )
-    private Date startTime;
+    private String startTime;
 
-    @DateTimeFormat( pattern = "yyyy-MM-dd HH:mm:ss" )
-    private Date endTime;
+    private String endTime;
 }

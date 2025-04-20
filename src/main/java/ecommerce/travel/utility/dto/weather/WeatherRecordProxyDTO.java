@@ -13,5 +13,5 @@ public class WeatherRecordProxyDTO {
 
     private WeatherRecordContentsProxyDTO contents;
 
-    private WeatherRecordHazardProxyDTO hazardCondition;
+    private WeatherRecordHazardProxyDTO hazardConditions;
 }
