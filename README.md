@@ -113,6 +113,16 @@ You need to install Erlang 20.0.x and RabbitMQ 3.7.3 on windows 10 to make sure 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
+### The SSL Problem When Using RestTemplate
+
+A response error, 'PKIX path building failed: sun.security.provider.certpath.SunCertPathBuilderException: unable to find valid certification path to requested target' , may happen when connecting to outer Api due to Java version.
+
+In this project, I simply customized the restTemplate settings and made the SSL invalid to demonstrate the code quickly.
+
+However, the standard way to solve the problem is to get the SSL token and add it into the TrustStore.
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
 ## Contact
 
 <a id="contact"></a>

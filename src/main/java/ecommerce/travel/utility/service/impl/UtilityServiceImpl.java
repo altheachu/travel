@@ -10,7 +10,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class UtilityServiceImpl implements UtilityService {
@@ -22,14 +28,18 @@ public class UtilityServiceImpl implements UtilityService {
     private RestTemplate restTemplate;
 
     public List<String> findWeatherHazardIn24Hours() throws Exception{
-        final String url = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization={authorization}";
-        Map<String, String> paramMap = new HashMap<>();
-        paramMap.put("authorization", "CWA-6F4180A1-F987-41D2-90BF-593FB8E407CA");
-        WeatherRptProxyDTO res = restTemplate.getForObject(url, WeatherRptProxyDTO.class, paramMap);
-        if(isHarzardQuerySuccess(res)){
-            return formatHazardData(res.getRecords().getRecord());
+        try{
+            final String url = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization={authorization}";
+            Map<String, String> paramMap = new HashMap<>();
+            paramMap.put("authorization", weatherApiKey);
+            WeatherRptProxyDTO res = restTemplate.getForObject(url, WeatherRptProxyDTO.class, paramMap);
+            if(isHarzardQuerySuccess(res)){
+                return formatHazardData(res.getRecords().getRecord());
+            }
+            return null;
+        } catch (Exception e){
+            throw new Exception(e.getMessage());
         }
-        return null;
     }
 
     private boolean isHarzardQuerySuccess(WeatherRptProxyDTO weatherRptProxyDTO){
@@ -39,11 +49,24 @@ public class UtilityServiceImpl implements UtilityService {
     private List<String> formatHazardData(List<WeatherRecordProxyDTO> weatherRecordProxyDTOs){
 
         List<String> resultStrs = new ArrayList<>();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
+        weatherRecordProxyDTOs = weatherRecordProxyDTOs.stream().filter(record-> {
+            try {
+                LocalDateTime now = LocalDateTime.now();
+                LocalDateTime nowPlus24Hours = now.plusHours(24);
+                Date startDate = sdf.parse(record.getDatasetInfo().getValidTime().getEndTime());
+                Date endDate = sdf.parse(record.getDatasetInfo().getValidTime().getEndTime());
+                LocalDateTime startLocalDate = startDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                LocalDateTime endLocalDate = endDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
+                boolean isEndIn24 = startLocalDate.isBefore(now) && endLocalDate.isBefore(nowPlus24Hours);
+                boolean isStartIn24 = startLocalDate.isAfter(now) && startLocalDate.isBefore(nowPlus24Hours);
+                return  isEndIn24 || isStartIn24;
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
+        }).collect(Collectors.toList());
         for(WeatherRecordProxyDTO record : weatherRecordProxyDTOs){
-            String startDate = record.getDatasetInfo().getValidTime().getStartTime();
-            String endDate = record.getDatasetInfo().getValidTime().getEndTime();
-            //TODO in 24 hours check
             List<WeatherHazardItemProxyDTO> hazard = record.getHazardConditions().getHazards().getHazard();
             String resultStr = "";
             for(WeatherHazardItemProxyDTO info : hazard){
