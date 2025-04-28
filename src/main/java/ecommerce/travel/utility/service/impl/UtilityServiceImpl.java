@@ -6,17 +6,10 @@ import ecommerce.travel.utility.dto.weather.WeatherRecordProxyDTO;
 import ecommerce.travel.utility.dto.weather.WeatherRptProxyDTO;
 import ecommerce.travel.utility.service.UtilityService;
 import ecommerce.travel.utility.utils.WeatherConstant;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-import java.security.cert.X509Certificate;
 import java.util.*;
 
 @Service
@@ -25,33 +18,14 @@ public class UtilityServiceImpl implements UtilityService {
     @Value("${weather.rpt.key}")
     private String weatherApiKey;
 
-    private RestTemplate createUnsafeRestTemplate() {
-        try {
-            TrustManager[] trustAllCerts = new TrustManager[] {
-                    new X509TrustManager() {
-                        public X509Certificate[] getAcceptedIssuers() { return new X509Certificate[0]; }
-                        public void checkClientTrusted(X509Certificate[] certs, String authType) {}
-                        public void checkServerTrusted(X509Certificate[] certs, String authType) {}
-                    }
-            };
-            SSLContext sslContext = SSLContext.getInstance("TLS");
-            sslContext.init(null, trustAllCerts, new java.security.SecureRandom());
-            HttpComponentsClientHttpRequestFactory requestFactory = new HttpComponentsClientHttpRequestFactory();
-            requestFactory.setHttpClient(org.apache.http.impl.client.HttpClients.custom()
-                    .setSSLContext(sslContext)
-                    .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
-                    .build());
-            return new RestTemplate(requestFactory);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-    }
+    @Autowired
+    private RestTemplate restTemplate;
 
     public List<String> findWeatherHazardIn24Hours() throws Exception{
         final String url = "https://opendata.cwa.gov.tw/api/v1/rest/datastore/W-C0033-002?Authorization={authorization}";
         Map<String, String> paramMap = new HashMap<>();
         paramMap.put("authorization", "CWA-6F4180A1-F987-41D2-90BF-593FB8E407CA");
-        WeatherRptProxyDTO res = createUnsafeRestTemplate().getForObject(url, WeatherRptProxyDTO.class, paramMap);
+        WeatherRptProxyDTO res = restTemplate.getForObject(url, WeatherRptProxyDTO.class, paramMap);
         if(isHarzardQuerySuccess(res)){
             return formatHazardData(res.getRecords().getRecord());
         }
