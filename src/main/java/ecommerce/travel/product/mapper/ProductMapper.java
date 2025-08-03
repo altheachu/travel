@@ -58,4 +58,8 @@ public interface ProductMapper {
     @Update("UPDATE PRODUCT SET disabled = #{disabled} WHERE id = #{id}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer deleteProduct(Product product);
+
+    @Update("UPDATE PRODUCT SET stock_qty = stock_qty - #{stockQty} WHERE id = #{id} and stock_qty >= #{stockQty}")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    Integer updateProductStock(Product product);
 }

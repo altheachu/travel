@@ -1,5 +1,7 @@
 package ecommerce.travel.product.service.impl;
 
+import com.fasterxml.jackson.core.JsonParseException;
+import com.rabbitmq.client.Channel;
 import ecommerce.travel.aop.EventLog;
 import ecommerce.travel.aop.LogTime;
 import ecommerce.travel.config.RabbitMQConfig;
@@ -11,9 +13,12 @@ import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
 import ecommerce.travel.utility.service.EventlogService;
 import ecommerce.travel.utility.utils.EventlogConstant;
+import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -24,7 +29,6 @@ import java.util.stream.Collectors;
 public class ProductServiceImpl implements ProductService {
 
     private ProductMapper productMapper;
-
     private EventlogService eventlogService;
 
     public ProductServiceImpl(ProductMapper productMapper, EventlogService eventlogService){
@@ -129,22 +133,36 @@ public class ProductServiceImpl implements ProductService {
 
     @RabbitListener(queues = {RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_TOPIC})
     @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.receiveMsg)
-    public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO) throws Exception{
+    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
+    public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO, Channel channel, Message message) throws Exception{
 
         try {
             List<OrderDetailProxyDTO> orderDetailList = orderEventProxyDTO.getOrderDetailProxyDTOList();
-
             for (OrderDetailProxyDTO orderdetail : orderDetailList){
                 Integer pdtId = orderdetail.getProductId();
                 Integer orderQty = orderdetail.getOrderQty();
-                Product product = productMapper.findProductById(pdtId);
-                Integer currentQty = product.getStockQty().intValue() - orderQty;
-                product.setStockQty(BigDecimal.valueOf(currentQty));
-                productMapper.updateProduct(product);
-            }
+                Product virtualProduct = new Product();
+                virtualProduct.setId(pdtId);
+                virtualProduct.setStockQty(BigDecimal.valueOf(orderQty));
+                // row lock is a type of pessimistic lock and should be aligned with repeatable read as the isolation
+                Integer updateRows = productMapper.updateProductStock(virtualProduct);
 
+                if(updateRows == 1){
+                    // stock deducted successfully
+                    // TODO 發送事件修改訂單狀態
+                    // channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+                    int i = 1/0;
+                }
+            }
         } catch (Exception e){
-            throw new Exception(e.getMessage());
+            // channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
+            throw e;
         }
+    }
+
+    @RabbitListener(queues = RabbitMQConfig.DEAD_LETTER_QUEUE)
+    public void handleDLQ(Message message) {
+        System.out.println("Headers: " + message.getMessageProperties().getHeaders());
+        System.out.println("Payload: " + new String(message.getBody()));
     }
 }
