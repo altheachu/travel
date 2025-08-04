@@ -5,7 +5,10 @@ import ecommerce.travel.utility.dto.weather.WeatherHazardLocationProxyDTO;
 import ecommerce.travel.utility.dto.weather.WeatherRecordProxyDTO;
 import ecommerce.travel.utility.dto.weather.WeatherRptProxyDTO;
 import ecommerce.travel.utility.service.UtilityService;
+import ecommerce.travel.utility.utils.RabbitMqConstant;
 import ecommerce.travel.utility.utils.WeatherConstant;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -83,4 +86,16 @@ public class UtilityServiceImpl implements UtilityService {
         }
         return resultStrs;
     }
+
+    /**
+     * check message content in dead letter queue
+     * @param message
+     */
+    /*
+    @RabbitListener(queues = RabbitMqConstant.DEAD_LETTER_QUEUE)
+    public void handleDLQ(Message message) {
+        System.out.println("Headers: " + message.getMessageProperties().getHeaders());
+        System.out.println("Payload: " + new String(message.getBody()));
+    }
+     */
 }

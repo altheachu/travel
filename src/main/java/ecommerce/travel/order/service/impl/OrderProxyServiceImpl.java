@@ -8,6 +8,7 @@ import ecommerce.travel.product.service.ProductService;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
 import ecommerce.travel.utility.service.EventlogService;
 import ecommerce.travel.utility.utils.EventlogConstant;
+import ecommerce.travel.utility.utils.RabbitMqConstant;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,7 @@ public class OrderProxyServiceImpl implements OrderProxyService {
         try {
             Boolean isPublish = false;
             // publish event
-            rabbitTemplate.convertAndSend(RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_EXCHANGE, RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_ROUTING, eventProxyDTO);
+            rabbitTemplate.convertAndSend(RabbitMqConstant.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_EXCHANGE, RabbitMqConstant.RABBITMQ_ORDER_TO_PRODUCT_DIRECT_ROUTING, eventProxyDTO);
             isPublish = true;
             return isPublish;
         } catch (Exception e){

@@ -13,6 +13,7 @@ import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
 import ecommerce.travel.utility.service.EventlogService;
 import ecommerce.travel.utility.utils.EventlogConstant;
+import ecommerce.travel.utility.utils.RabbitMqConstant;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
@@ -131,10 +132,10 @@ public class ProductServiceImpl implements ProductService {
         }
     }
 
-    @RabbitListener(queues = {RabbitMQConfig.RABBITMQ_ORDER_TO_PRODUCT_TOPIC})
+    @RabbitListener(queues = {RabbitMqConstant.RABBITMQ_ORDER_TO_PRODUCT_TOPIC})
     @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.receiveMsg)
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
-    public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO, Channel channel, Message message) throws Exception{
+    public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO/*, Channel channel, Message message*/) throws Exception{
 
         try {
             List<OrderDetailProxyDTO> orderDetailList = orderEventProxyDTO.getOrderDetailProxyDTOList();
@@ -149,20 +150,16 @@ public class ProductServiceImpl implements ProductService {
 
                 if(updateRows == 1){
                     // stock deducted successfully
-                    // TODO 發送事件修改訂單狀態
-                    // channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
-                    int i = 1/0;
                 }
+                // if the ack mode setting in properties file is manual, the ack is completed through the following line.
+                // channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             }
         } catch (Exception e){
+            // if the ack mode setting in properties file is manual, the nack is completed through the following line.
             // channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
             throw e;
         }
+        
     }
 
-    @RabbitListener(queues = RabbitMQConfig.DEAD_LETTER_QUEUE)
-    public void handleDLQ(Message message) {
-        System.out.println("Headers: " + message.getMessageProperties().getHeaders());
-        System.out.println("Payload: " + new String(message.getBody()));
-    }
 }
