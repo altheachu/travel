@@ -8,6 +8,7 @@ import ecommerce.travel.config.RabbitMQConfig;
 import ecommerce.travel.product.entity.Product;
 import ecommerce.travel.product.mapper.ProductMapper;
 import ecommerce.travel.product.model.ProductModel;
+import ecommerce.travel.product.service.ProductProxyService;
 import ecommerce.travel.product.service.ProductService;
 import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
@@ -23,7 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -31,10 +34,12 @@ public class ProductServiceImpl implements ProductService {
 
     private ProductMapper productMapper;
     private EventlogService eventlogService;
+    private ProductProxyService productProxyService;
 
-    public ProductServiceImpl(ProductMapper productMapper, EventlogService eventlogService){
+    public ProductServiceImpl(ProductMapper productMapper, EventlogService eventlogService, ProductProxyService productProxyService){
         this.productMapper = productMapper;
         this.eventlogService = eventlogService;
+        this.productProxyService = productProxyService;
     }
 
     @Override
@@ -138,8 +143,13 @@ public class ProductServiceImpl implements ProductService {
     public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO/*, Channel channel, Message message*/) throws Exception{
 
         try {
+            boolean isDeductSuccess = false;
+            Integer orderId = 0;
             List<OrderDetailProxyDTO> orderDetailList = orderEventProxyDTO.getOrderDetailProxyDTOList();
             for (OrderDetailProxyDTO orderdetail : orderDetailList){
+                if(orderId != orderdetail.getOrderId()){
+                    orderId = orderdetail.getOrderId();
+                }
                 Integer pdtId = orderdetail.getProductId();
                 Integer orderQty = orderdetail.getOrderQty();
                 Product virtualProduct = new Product();
@@ -150,16 +160,25 @@ public class ProductServiceImpl implements ProductService {
 
                 if(updateRows == 1){
                     // stock deducted successfully
+                    isDeductSuccess = true;
+                } else {
+                    isDeductSuccess = false;
                 }
-                // if the ack mode setting in properties file is manual, the ack is completed through the following line.
-                // channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
             }
+            if(isDeductSuccess){
+                Map<String, Object> paramMap = new HashMap<>();
+                paramMap.put("id", orderId);
+                paramMap.put("status", 2);
+                productProxyService.modifyOrderStatus(paramMap);
+            }
+            // if the ack mode setting in properties file is manual, the ack is completed through the following line.
+            // channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e){
             // if the ack mode setting in properties file is manual, the nack is completed through the following line.
             // channel.basicNack(message.getMessageProperties().getDeliveryTag(), false, false);
             throw e;
         }
-        
+
     }
 
 }

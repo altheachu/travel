@@ -8,7 +8,7 @@ import java.util.Map;
 @Mapper
 public interface OrderMapper {
 
-    @Insert("INSERT INTO ORDERS (id, customer_id, order_date, order_amt, daily_seqno, cancel_flag) VALUES (#{id}, #{customerId}, #{orderDate}, #{orderAmt}, #{dailySeqno}, #{cancelFlag})")
+    @Insert("INSERT INTO ORDERS (id, customer_id, order_date, order_amt, daily_seqno, cancel_flag, status) VALUES (#{id}, #{customerId}, #{orderDate}, #{orderAmt}, #{dailySeqno}, #{cancelFlag}, #{status})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer createOrder(Order order);
 
@@ -29,10 +29,15 @@ public interface OrderMapper {
             @Result(property = "orderAmt", column = "order_amt", id=false),
             @Result(property = "dailySeqno", column = "daily_seqno", id=false),
             @Result(property = "cancelFlag", column = "cancel_flag", id=false),
+            @Result(property = "status", column = "status", id=false),
     })
     Order findOrderById(@Param("id") Integer id);
 
     @Update("UPDATE ORDERS SET cancel_flag = #{cancelFlag} WHERE id = #{id}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer deleteOrderById(Map<String, Object> paramMap);
+
+    @Update("UPDATE ORDERS SET status = #{status} WHERE id = #{id}")
+    @Options(useGeneratedKeys = true, keyProperty = "id")
+    Integer modifyOrderStausById(Map<String, Object> paramMap);
 }

@@ -6,6 +6,7 @@ public class RabbitMqConstant {
      */
     public static final String RABBITMQ_DEMOPRODUCER_TO_DEMOCOMSUMER_TOPIC_001 = "rabbitmqDemoTopic";
     public static final String RABBITMQ_ORDER_TO_PRODUCT_TOPIC = "rabbitmqProductTopic";
+    public static final String RABBITMQ_PRODUCT_TO_ORDER_TOPIC = "rabbitmqOrderTopic";
     public static final String DEAD_LETTER_QUEUE = "dead-letter-queue";
 
     /*
@@ -13,6 +14,7 @@ public class RabbitMqConstant {
      */
     public static final String RABBITMQ_DEMOPRODUCER_TO_DEMOCOMSUMER_DIRECT_EXCHANGE = "rabbitmqDemoDirectExchange";
     public static final String RABBITMQ_ORDER_TO_PRODUCT_DIRECT_EXCHANGE = "rabbitmqProductDirectExchange";
+    public static final String RABBITMQ_PRODUCT_TO_ORDER_DIRECT_EXCHANGE = "rabbitmqOrderDirectExchange";
     public static final String RABBITMQ_DEAD_LETTER_EXCHANGE = "dlx-exchange";
 
     /*
@@ -20,6 +22,7 @@ public class RabbitMqConstant {
      */
     public static final String RABBITMQ_DEMOPRODUCER_TO_DEMOCOMSUMER_DIRECT_ROUTING = "rabbitmqDemoDirectRouting";
     public static final String RABBITMQ_ORDER_TO_PRODUCT_DIRECT_ROUTING = "rabbitmqProductDirectRouting";
+    public static final String RABBITMQ_PRODUCT_TO_ORDER_DIRECT_ROUTING = "rabbitmqOrderDirectRouting";
     public static final String RABBITMQ_DLX_ROUTING = "dlx-routing-key";
 
     /*

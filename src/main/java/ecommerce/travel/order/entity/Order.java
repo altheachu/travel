@@ -20,5 +20,7 @@ public class Order {
     private Integer dailySeqno;
     // 訂單取消否
     private String cancelFlag;
+    // 配送狀態 1 檢貨中 2 已成立 3已發貨 4已寄送
+    private Integer status;
 
 }

@@ -26,12 +26,12 @@ public class EventlogAspect {
         eventlog.setSendTime(orderEventProxyDTO.getSendTime());
         eventlog.setType(eventLog.type());
 
-        if (eventLog.logTime().equals(LogTime.AFTER_METHOD)){
+        if (eventLog.logTime().equals(LogTime.BEFORE_METHOD)){
             // record event pre-publish log
             eventlogService.updateEventLog(eventlog);
         }
         Object result = joinPoint.proceed();
-        if (eventLog.logTime().equals(LogTime.BEFORE_METHOD)){
+        if (eventLog.logTime().equals(LogTime.AFTER_METHOD)){
             // record event receive log
             eventlogService.updateEventLog(eventlog);
         }

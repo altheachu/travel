@@ -36,7 +36,7 @@ public class UtilityServiceImpl implements UtilityService {
             Map<String, String> paramMap = new HashMap<>();
             paramMap.put("authorization", weatherApiKey);
             WeatherRptProxyDTO res = restTemplate.getForObject(url, WeatherRptProxyDTO.class, paramMap);
-            if(isHarzardQuerySuccess(res)){
+            if(isHarzardQuerySuccess(res) && res.getRecords()!=null){
                 return formatHazardData(res.getRecords().getRecord());
             }
             return null;
@@ -70,19 +70,22 @@ public class UtilityServiceImpl implements UtilityService {
             }
         }).collect(Collectors.toList());
         for(WeatherRecordProxyDTO record : weatherRecordProxyDTOs){
-            List<WeatherHazardItemProxyDTO> hazard = record.getHazardConditions().getHazards().getHazard();
-            String resultStr = "";
-            for(WeatherHazardItemProxyDTO info : hazard){
-                StringBuilder sb = new StringBuilder("");
-                sb.append(WeatherConstant.phenomenaBilinqualMap.getOrDefault(info.getInfo().getPhenomena(), info.getInfo().getPhenomena()));
-                sb.append(WeatherConstant.significanceBilinqualMap.getOrDefault(info.getInfo().getSignificance(), info.getInfo().getSignificance()) + "! ");
-                for(WeatherHazardLocationProxyDTO location : info.getInfo().getAffectedAreas().getLocation()){
-                    sb.append(WeatherConstant.locationBilinqualMap.getOrDefault(location.getLocationName(), location.getLocationName()));
-                    sb.append(", ");
+            if(record.getHazardConditions()!=null && record.getHazardConditions().getHazards()!=null &&
+                    record.getHazardConditions().getHazards().getHazard()!=null){
+                List<WeatherHazardItemProxyDTO> hazard = record.getHazardConditions().getHazards().getHazard();
+                String resultStr = "";
+                for(WeatherHazardItemProxyDTO info : hazard){
+                    StringBuilder sb = new StringBuilder("");
+                    sb.append(WeatherConstant.phenomenaBilinqualMap.getOrDefault(info.getInfo().getPhenomena(), info.getInfo().getPhenomena()));
+                    sb.append(WeatherConstant.significanceBilinqualMap.getOrDefault(info.getInfo().getSignificance(), info.getInfo().getSignificance()) + "! ");
+                    for(WeatherHazardLocationProxyDTO location : info.getInfo().getAffectedAreas().getLocation()){
+                        sb.append(WeatherConstant.locationBilinqualMap.getOrDefault(location.getLocationName(), location.getLocationName()));
+                        sb.append(", ");
+                    }
+                    resultStr = sb.substring(0, sb.length() - 2);
                 }
-                resultStr = sb.substring(0, sb.length() - 2);
+                resultStrs.add(resultStr);
             }
-            resultStrs.add(resultStr);
         }
         return resultStrs;
     }

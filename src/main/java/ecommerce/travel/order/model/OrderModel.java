@@ -1,5 +1,6 @@
 package ecommerce.travel.order.model;
 
+import io.swagger.models.auth.In;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -22,4 +23,6 @@ public class OrderModel {
     private List<OrderDetailModel> orderDetailList;
     // 訂單取消否
     private String cancelFlag;
+    // 配送狀態
+    private Integer status;
 }

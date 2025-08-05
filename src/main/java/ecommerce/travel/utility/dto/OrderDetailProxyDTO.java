@@ -13,5 +13,6 @@ public class OrderDetailProxyDTO implements Serializable {
 
     private Integer productId;
     private Integer orderQty;
+    private Integer orderId;
 
 }

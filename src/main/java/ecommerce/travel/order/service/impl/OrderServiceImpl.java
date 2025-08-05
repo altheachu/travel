@@ -1,5 +1,7 @@
 package ecommerce.travel.order.service.impl;
 
+import ecommerce.travel.aop.EventLog;
+import ecommerce.travel.aop.LogTime;
 import ecommerce.travel.aop.SendEmail;
 import ecommerce.travel.aop.Timing;
 import ecommerce.travel.order.entity.Order;
@@ -10,10 +12,16 @@ import ecommerce.travel.order.model.OrderDetailModel;
 import ecommerce.travel.order.model.OrderModel;
 import ecommerce.travel.order.service.OrderProxyService;
 import ecommerce.travel.order.service.OrderService;
+import ecommerce.travel.product.entity.Product;
 import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
+import ecommerce.travel.utility.utils.EventlogConstant;
+import ecommerce.travel.utility.utils.RabbitMqConstant;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.sql.Date;
@@ -89,6 +97,8 @@ public class OrderServiceImpl implements OrderService {
             Order order = new Order();
             BeanUtils.copyProperties(orderModel, order);
             order.setOrderDate(new Date(orderModel.getOrderDate().getTime()));
+            order.setStatus(1);
+            order.setCancelFlag("N");
             Integer todayOrderCnt = orderMapper.findOrderCnt(order);
             if (todayOrderCnt != 0){
                 dailySeqno = orderMapper.findOrderDailySeqno(order) + 1;
@@ -153,6 +163,17 @@ public class OrderServiceImpl implements OrderService {
             return orderMapper.deleteOrderById(paramMap);
         } catch (Exception e){
             throw new Exception("Fail to delete order: " + e.getMessage());
+        }
+    }
+
+    @RabbitListener(queues = {RabbitMqConstant.RABBITMQ_PRODUCT_TO_ORDER_TOPIC})
+//    @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.receiveMsg)
+    @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
+    public void modifyStatusAfterDeductStock(Map<String, Object> paramMap) {
+        try {
+            orderMapper.modifyOrderStausById(paramMap);
+        } catch (Exception e){
+            throw e;
         }
     }
 }

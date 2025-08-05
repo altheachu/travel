@@ -73,6 +73,17 @@ public class RabbitMQConfig {
         return new Queue(RabbitMqConstant.DEAD_LETTER_QUEUE, true);
     }
 
+    @Bean
+    public Queue rabbitmqOrderDirectQueue(){
+        Map<String, Object> args = new HashMap<>();
+        // assign dead exchange
+        args.put(RabbitMqConstant.X_DEAD_LETTER_EXCHANGE, RabbitMqConstant.RABBITMQ_DEAD_LETTER_EXCHANGE);
+        // assign dlx routing key
+        args.put(RabbitMqConstant.X_DEAD_LETTER_ROUTING_KEY, RabbitMqConstant.RABBITMQ_DLX_ROUTING);
+        // assign message ttl
+        // args.put(RabbitMQConfig.X_MESSAGE_TTL, 60000); // 可選，訊息過期時間（毫秒）
+        return new Queue(RabbitMqConstant.RABBITMQ_PRODUCT_TO_ORDER_TOPIC, true, false, false, args);
+    }
     /**
      * Exchange 交換機
      */
@@ -86,6 +97,10 @@ public class RabbitMQConfig {
         return new DirectExchange(RabbitMqConstant.RABBITMQ_DEAD_LETTER_EXCHANGE);
     }
 
+    @Bean
+    public DirectExchange rabbitmqOrderDirectExchange() {
+        return new DirectExchange(RabbitMqConstant.RABBITMQ_PRODUCT_TO_ORDER_DIRECT_EXCHANGE, true, false);
+    }
     @Bean
     public Binding bindProductDirect() {
         //链式写法，绑定交换机和队列，并设置匹配键
@@ -104,6 +119,18 @@ public class RabbitMQConfig {
                 .bind(dlq())
                 .to(dlxExchange())
                 .with(RabbitMqConstant.RABBITMQ_DLX_ROUTING); // 與上面 x-dead-letter-routing-key 對應
+    }
+
+    @Bean
+    public Binding bindOrderDirect() {
+        //链式写法，绑定交换机和队列，并设置匹配键
+        return BindingBuilder
+                //绑定队列
+                .bind(rabbitmqOrderDirectQueue())
+                //到交换机
+                .to(rabbitmqOrderDirectExchange())
+                //并设置匹配键
+                .with(RabbitMqConstant.RABBITMQ_PRODUCT_TO_ORDER_DIRECT_ROUTING);
     }
 
 }

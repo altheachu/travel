@@ -12,6 +12,7 @@ CREATE TABLE IF NOT EXISTS ORDERS (
     customer_id INT,
     daily_seqno INT,
     cancel_flag VARCHAR(1),
+    status INT,
     foreign key (customer_id) references CUSTOMER(id)
 );
 
