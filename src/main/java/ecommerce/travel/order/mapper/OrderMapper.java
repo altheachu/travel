@@ -1,6 +1,7 @@
 package ecommerce.travel.order.mapper;
 
 import ecommerce.travel.order.entity.Order;
+import ecommerce.travel.utility.dto.ProductEventProxyDTO;
 import org.apache.ibatis.annotations.*;
 
 import java.util.Map;
@@ -37,7 +38,7 @@ public interface OrderMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id")
     Integer deleteOrderById(Map<String, Object> paramMap);
 
-    @Update("UPDATE ORDERS SET status = #{status} WHERE id = #{id}")
+    @Update("UPDATE ORDERS SET status = #{status} WHERE id = #{orderId}")
     @Options(useGeneratedKeys = true, keyProperty = "id")
-    Integer modifyOrderStausById(Map<String, Object> paramMap);
+    Integer modifyOrderStausById(ProductEventProxyDTO productEventProxyDTO);
 }

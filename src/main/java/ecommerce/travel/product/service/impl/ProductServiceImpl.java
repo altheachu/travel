@@ -12,6 +12,7 @@ import ecommerce.travel.product.service.ProductProxyService;
 import ecommerce.travel.product.service.ProductService;
 import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
+import ecommerce.travel.utility.dto.ProductEventProxyDTO;
 import ecommerce.travel.utility.service.EventlogService;
 import ecommerce.travel.utility.utils.EventlogConstant;
 import ecommerce.travel.utility.utils.RabbitMqConstant;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +34,7 @@ import java.util.stream.Collectors;
 @Service
 public class ProductServiceImpl implements ProductService {
 
+    private static SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private ProductMapper productMapper;
     private EventlogService eventlogService;
     private ProductProxyService productProxyService;
@@ -138,7 +141,7 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @RabbitListener(queues = {RabbitMqConstant.RABBITMQ_ORDER_TO_PRODUCT_TOPIC})
-    @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.receiveMsg)
+    @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.consumeMsg)
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
     public void deductStockFromOrder(OrderEventProxyDTO orderEventProxyDTO/*, Channel channel, Message message*/) throws Exception{
 
@@ -166,10 +169,16 @@ public class ProductServiceImpl implements ProductService {
                 }
             }
             if(isDeductSuccess){
-                Map<String, Object> paramMap = new HashMap<>();
-                paramMap.put("id", orderId);
-                paramMap.put("status", 2);
-                productProxyService.modifyOrderStatus(paramMap);
+
+                String msgId = String.valueOf(Math.round(Math.random()*1000));
+                String sendTime = sdf.format(new java.util.Date());
+
+                ProductEventProxyDTO productEventProxyDTO = new ProductEventProxyDTO();
+                productEventProxyDTO.setOrderId(orderId);
+                productEventProxyDTO.setStatus(2);
+                productEventProxyDTO.setMsgId(msgId);
+                productEventProxyDTO.setSendTime(sendTime);
+                productProxyService.modifyOrderStatus(productEventProxyDTO);
             }
             // if the ack mode setting in properties file is manual, the ack is completed through the following line.
             // channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);

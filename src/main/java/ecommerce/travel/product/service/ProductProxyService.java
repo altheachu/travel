@@ -1,6 +1,7 @@
 package ecommerce.travel.product.service;
 
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
+import ecommerce.travel.utility.dto.ProductEventProxyDTO;
 
 import java.util.Map;
 
@@ -12,6 +13,6 @@ public interface ProductProxyService {
     params: orderDetail, msgId, sendTime
     lastModified: 2025-08-05
     */
-    void modifyOrderStatus(Map<String, Object> paramMap) throws Exception;
+    void modifyOrderStatus(ProductEventProxyDTO productEventProxyDTO) throws Exception;
 
 }

@@ -15,6 +15,7 @@ import ecommerce.travel.order.service.OrderService;
 import ecommerce.travel.product.entity.Product;
 import ecommerce.travel.utility.dto.OrderDetailProxyDTO;
 import ecommerce.travel.utility.dto.OrderEventProxyDTO;
+import ecommerce.travel.utility.dto.ProductEventProxyDTO;
 import ecommerce.travel.utility.utils.EventlogConstant;
 import ecommerce.travel.utility.utils.RabbitMqConstant;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
@@ -167,11 +168,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @RabbitListener(queues = {RabbitMqConstant.RABBITMQ_PRODUCT_TO_ORDER_TOPIC})
-//    @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.receiveMsg)
+    @EventLog(logTime = LogTime.BEFORE_METHOD, type = EventlogConstant.consumeMsg)
     @Transactional(isolation = Isolation.REPEATABLE_READ, rollbackFor = Exception.class)
-    public void modifyStatusAfterDeductStock(Map<String, Object> paramMap) {
+    public void modifyStatusAfterDeductStock(ProductEventProxyDTO productEventProxyDTO) {
         try {
-            orderMapper.modifyOrderStausById(paramMap);
+            orderMapper.modifyOrderStausById(productEventProxyDTO);
         } catch (Exception e){
             throw e;
         }

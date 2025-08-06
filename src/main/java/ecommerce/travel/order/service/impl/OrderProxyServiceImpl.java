@@ -43,7 +43,7 @@ public class OrderProxyServiceImpl implements OrderProxyService {
     }
 
     @Override
-    @EventLog(logTime = LogTime.AFTER_METHOD, type = EventlogConstant.prePublishMsg)
+    @EventLog(logTime = LogTime.AFTER_METHOD, type = EventlogConstant.publishMsg)
     public Boolean deductProductStock(OrderEventProxyDTO eventProxyDTO) throws Exception {
         try {
             Boolean isPublish = false;
